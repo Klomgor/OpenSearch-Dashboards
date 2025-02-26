@@ -250,9 +250,6 @@ export const setSearchConfigurations = ({
 
     cy.getElementByTestId(`docTableHeaderFieldSort_${APPLIED_SORT}`).click();
 
-    // TODO: This reload shouldn't need to be here, but currently the sort doesn't always happen right away
-    // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/9131
-    cy.reload();
     cy.getElementByTestId('querySubmitButton').should('be.visible');
   }
 };
@@ -331,7 +328,7 @@ export const verifySavedSearchInAssetsPage = (
   },
   workspaceName
 ) => {
-  cy.navigateToWorkSpaceSpecificPage({
+  cy.osd.navigateToWorkSpaceSpecificPage({
     workspaceName: workspaceName,
     page: 'objects',
     isEnhancement: true,
@@ -464,7 +461,7 @@ export const updateSavedSearchAndSaveAndVerify = (
   datasourceName,
   saveAsNew
 ) => {
-  cy.navigateToWorkSpaceSpecificPage({
+  cy.osd.navigateToWorkSpaceSpecificPage({
     workspaceName: workspaceName,
     page: 'discover',
     isEnhancement: true,
@@ -506,11 +503,15 @@ export const updateSavedSearchAndSaveAndVerify = (
  * @param {string} workspaceName - name of workspace
  */
 export const navigateToDashboardAndOpenSavedSearchPanel = (workspaceName) => {
-  cy.navigateToWorkSpaceSpecificPage({
+  cy.osd.navigateToWorkSpaceSpecificPage({
     workspaceName,
     page: 'dashboards',
     isEnhancement: true,
   });
+
+  // adding a wait as cy.click sometimes fails with the error "...failed because the page updated while this command was executing"
+  cy.wait(1000);
+
   cy.getElementByTestId('newItemButton').click();
   // using DQL as it supports date picker
   setDatePickerDatesAndSearchIfRelevant(QueryLanguages.DQL.name);

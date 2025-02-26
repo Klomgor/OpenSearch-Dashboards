@@ -5,11 +5,17 @@
 
 import { defineConfig } from 'cypress';
 import webpackPreprocessor from '@cypress/webpack-preprocessor';
+// TODO: import { paste } from 'copy-paste';
 
 module.exports = defineConfig({
-  defaultCommandTimeout: 60000,
+  experimentalMemoryManagement: true,
+  defaultCommandTimeout: 15000,
   requestTimeout: 60000,
   responseTimeout: 60000,
+  retries: {
+    runMode: 2,
+    openMode: 0,
+  },
   viewportWidth: 2000,
   viewportHeight: 1320,
   env: {
@@ -76,6 +82,12 @@ function setupNodeEvents(
       webpackOptions,
     })
   );
+  // TODO: Define the custom task to read clipboard
+  /* on('task', {
+    readClipboard() {
+      return paste(); // Return the clipboard content
+    },
+  });*/
 
   return config;
 }
